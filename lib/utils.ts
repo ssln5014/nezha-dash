@@ -26,10 +26,10 @@ export function formatBytes(bytes: number, decimals: number = 2) {
   const dm = decimals < 0 ? 0 : decimals;
   const sizes = [
     "Bytes",
-    "KiB",
-    "MiB",
-    "GiB",
-    "TiB",
+    "KB",
+    "MB",
+    "GB",
+    "TB",
     "PiB",
     "EiB",
     "ZiB",
