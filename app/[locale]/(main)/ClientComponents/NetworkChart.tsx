@@ -54,7 +54,7 @@ export function NetworkChartClient({ server_id }: { server_id: number }) {
       ...config,
       [key]: {
         label: key,
-        color: `hsl(var(--chart-${index + 1}))`,
+        color: `hsl(var(--chart-${(index % 5) + 1}))`,
       },
     };
   }, {} as ChartConfig);
@@ -89,13 +89,13 @@ export function NetworkChart({
 
   return (
     <Card>
-      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-4">
+      <CardHeader className="flex flex-col items-stretch space-y-0 p-0 sm:flex-row">
+        <div className="flex flex-none flex-col justify-center gap-1 border-b px-6 py-4">
           <CardTitle
             onClick={() => {
               router.push(`/${locale}/`);
             }}
-            className="flex cursor-pointer items-center gap-0.5 text-xl"
+            className="flex flex-none cursor-pointer items-center gap-0.5 text-xl"
           >
             <BackIcon />
             {chartData[chartDataKey[0]][0].server_name}
@@ -104,21 +104,24 @@ export function NetworkChart({
             {chartDataKey.length} {t("ServerMonitorCount")}
           </CardDescription>
         </div>
-        <div className="flex">
+        <div className="flex flex-wrap">
           {chartDataKey.map((key, index) => {
             const chart = key as keyof typeof chartConfig;
             return (
               <button
                 key={key}
                 data-active={activeChart === key}
-                className={`relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-6 ${index !== 0 ? "border-l" : ""} `}
+                className={`relative z-30 flex flex-1 flex-col justify-center gap-1 border-b px-6 py-4 text-left data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-6`}
                 onClick={() => setActiveChart(key as keyof typeof chartConfig)}
               >
                 <span className="whitespace-nowrap text-xs text-muted-foreground">
                   {chart}
                 </span>
                 <span className="text-md font-bold leading-none sm:text-lg">
-                  {chartData[key][0].avg_delay.toFixed(2)}ms
+                  {chartData[key][chartData[key].length - 1].avg_delay.toFixed(
+                    2,
+                  )}
+                  ms
                 </span>
               </button>
             );
