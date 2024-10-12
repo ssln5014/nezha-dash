@@ -172,13 +172,17 @@ const ChartTooltipContent = React.forwardRef<
       return null;
     }
 
+    payload.sort((a, b) => {
+      return Number(b.value) - Number(a.value);
+    });
+
     const nestLabel = payload.length === 1 && indicator !== "dot";
 
     return (
       <div
         ref={ref}
         className={cn(
-          "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
+          "grid min-w-[8rem] items-start gap-1.5 rounded-sm border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
           className,
         )}
       >
@@ -238,8 +242,15 @@ const ChartTooltipContent = React.forwardRef<
                         </span>
                       </div>
                       {item.value && (
-                        <span className="ml-2 font-mono font-medium tabular-nums text-foreground">
-                          {item.value.toLocaleString()}
+                        <span
+                          className={cn(
+                            "ml-2 font-mono font-medium tabular-nums text-foreground",
+                            payload.length === 1 && "-ml-9",
+                          )}
+                        >
+                          {typeof item.value === "number"
+                            ? item.value.toFixed(3).toLocaleString()
+                            : item.value}
                         </span>
                       )}
                     </div>
