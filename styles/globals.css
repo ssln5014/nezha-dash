@@ -88,6 +88,12 @@
   }
 }
 
+@media (min-width: 768px) {
+    .md\:mt-16 {
+        margin-top: 2rem !important;
+    }
+}
+
 @layer utilities {
   .step {
     counter-increment: step;
