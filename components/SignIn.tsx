@@ -2,7 +2,7 @@
 
 import { getCsrfToken, signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Loader } from "./loading/Loader";
@@ -11,19 +11,11 @@ export function SignIn() {
   const t = useTranslations("SignIn");
 
   const [csrfToken, setCsrfToken] = useState("");
-  const [errorState, setErrorState] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorState, setErrorState] = useState(false);
   const [successState, setSuccessState] = useState(false);
 
-  const search = useSearchParams();
-  const error = search.get("error");
   const router = useRouter();
-
-  useEffect(() => {
-    if (error) {
-      setErrorState(true);
-    }
-  }, [error]);
 
   useEffect(() => {
     async function loadProviders() {
@@ -37,14 +29,17 @@ export function SignIn() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
-    const password = formData.get("password");
+    const password = formData.get("password") as string;
     const res = await signIn("credentials", {
-      password,
+      password: password,
       redirect: false,
     });
     if (res?.error) {
+      console.log("login error");
       setErrorState(true);
+      setSuccessState(false);
     } else {
+      console.log("login success");
       setErrorState(false);
       setSuccessState(true);
       router.push("/");
@@ -52,7 +47,6 @@ export function SignIn() {
     }
     setLoading(false);
   };
-
   return (
     <form
       className="flex flex-col items-center justify-start gap-4 p-4 "
@@ -79,7 +73,7 @@ export function SignIn() {
           />
         </label>
         <button
-          className=" px-1.5 py-0.5 w-fit flex items-center gap-1 text-sm font-semibold rounded-[8px] border bg-card hover:brightness-95 transition-all text-card-foreground shadow-lg shadow-neutral-200/40 dark:shadow-none"
+          className="px-1.5 py-0.5 w-fit flex items-center gap-1 text-sm font-semibold rounded-[8px] border bg-card hover:brightness-95 transition-all text-card-foreground shadow-lg shadow-neutral-200/40 dark:shadow-none"
           disabled={loading}
         >
           {t("Submit")}
